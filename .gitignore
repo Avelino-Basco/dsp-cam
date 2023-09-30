@@ -1,0 +1,3 @@
+# folders or items to ignore when doing commit
+virtual_environment/
+
