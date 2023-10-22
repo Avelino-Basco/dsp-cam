@@ -76,16 +76,17 @@ with pyvirtualcam.Camera(800, 300, fps=30) as cam:
 			print("[INFO] homography could not be computed")
 			concat = 1
 			break
-      
-    rows, cols = np.where(result[:, :, 0] != 0)
-	  min_row, max_row = min(rows), max(rows) + 1
-    min_col, max_col = min(cols), max(cols) + 1
-    result = result[min_row:max_row, min_col:max_col, :]
+
+		rows, cols = np.where(result[:, :, 0] != 0)
+		min_row, max_row = min(rows), max(rows) + 1
+		min_col, max_col = min(cols), max(cols) + 1
+		result = result[min_row:max_row, min_col:max_col, :]
 		# show the output images
 		#cv2.imshow("Result", result)
 		#cv2.imshow("Left Matched", result_left)
 		#cv2.imshow("Right Matched", result_right)
 		#cv2.imshow("Transfer Matched", stitched_frame)
+		
 		cv2.imshow("Left Frame", left)
 		cv2.imshow("Right Frame", right)
 		key = cv2.waitKey(1) & 0xFF
