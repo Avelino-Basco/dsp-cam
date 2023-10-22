@@ -20,12 +20,15 @@ import cv2
 #time.sleep(2.0)
 
 # define a video capture object
-rightStream = cv2.VideoCapture(0)
-leftStream = cv2.VideoCapture(1)
+rightStream = cv2.VideoCapture("http://192.168.158.24:4747/video")
+
+leftStream = cv2.VideoCapture(0)
+
 
 # initialize the image stitcher, motion detector, and total
 # number of frames read
 stitcher = Stitcher()
+motion = BasicMotionDetector(minArea=500)
 total = 0
 
 # loop over frames from the video streams
@@ -49,6 +52,10 @@ while True:
 		print("[INFO] homography could not be computed")
 		break
 
+	rows, cols = np.where(result[:, :, 0] != 0)
+	min_row, max_row = min(rows), max(rows) + 1
+	min_col, max_col = min(cols), max(cols) + 1
+	result = result[min_row:max_row, min_col:max_col, :]
 	# convert the panorama to grayscale, blur it slightly, update
 	# the motion detector
 	#gray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
@@ -56,31 +63,31 @@ while True:
 	#locs = motion.update(gray)
 
 	# only process the panorama for motion if a nice average has
-	# been built up
+	# been built upR
 	#if total > 32 and len(locs) > 0:
 		# initialize the minimum and maximum (x, y)-coordinates,
 		# respectively
-	#	(minX, minY) = (np.inf, np.inf)
-	#	(maxX, maxY) = (-np.inf, -np.inf)
+		#(minX, minY) = (np.inf, np.inf)
+		#(maxX, maxY) = (-np.inf, -np.inf)
 
 		# loop over the locations of motion and accumulate the
 		# minimum and maximum locations of the bounding boxes
-		# for l in locs:
-		# 	(x, y, w, h) = cv2.boundingRect(l)
-		# 	(minX, maxX) = (min(minX, x), max(maxX, x + w))
-		# 	(minY, maxY) = (min(minY, y), max(maxY, y + h))
+		#for l in locs:
+		#	(x, y, w, h) = cv2.boundingRect(l)
+		#	(minX, maxX) = (min(minX, x), max(maxX, x + w))
+		#	(minY, maxY) = (min(minY, y), max(maxY, y + h))
 
 		# # draw the bounding box
-		# cv2.rectangle(result, (minX, minY), (maxX, maxY),
+		#cv2.rectangle(result, (minX, minY), (maxX, maxY),
 		# 	(0, 0, 255), 3)
 
 	# increment the total number of frames read and draw the 
 	# timestamp on the image
-	# total += 1
-	# timestamp = datetime.datetime.now()
-	# ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
-	# cv2.putText(result, ts, (10, result.shape[1] - 10),
-	# cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
+	#total += 1
+	#timestamp = datetime.datetime.now()
+	#ts = timestamp.strftime("%A %d %B %Y %I:%M:%S%p")
+	#cv2.putText(result, ts, (10, result.shape[1] - 10),
+	#cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
 
 	# show the output images
 	cv2.imshow("Result", result)
